@@ -1,3 +1,6 @@
+# FreeTube
+# Developed by William Henderson (https://github.com/w-henderson)
+
 import pafy
 import requests
 from bs4 import BeautifulSoup
