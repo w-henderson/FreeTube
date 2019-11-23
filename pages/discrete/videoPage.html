@@ -1,0 +1,136 @@
+<html>
+    <head>
+        <title>FreeTube</title>
+        <style>
+            @font-face {
+                font-family: titleFont;
+                src:url("/font_bold.ttf");
+            }
+
+            @font-face {
+                font-family: normalFont;
+                src:url("/font_normal.ttf");
+            }
+
+            @keyframes howItWorks {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes hideSearch {
+                0% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            body {
+                font-family: normalFont;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            iframe {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                top: 0;
+                left: 0;
+            }
+            .search {
+                position: absolute;
+                bottom: 0px;
+                left: 20px;
+                width: 400px;
+                height: 200px;
+                background-color: #2C2F33;
+                color: white;
+                text-align: center;
+                padding: 25px 25px 0px;
+                border-radius: 40px 40px 0px 0px;
+                transition: 1s;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+            .searchHidden {
+                position: absolute;
+                bottom: -400px;
+                left: 20px;
+                width: 400px;
+                height: 200px;
+                background-color: #2C2F33;
+                color: white;
+                text-align: center;
+                padding: 25px 25px 0px;
+                border-radius: 40px 40px 0px 0px;
+                transition: 1s;
+                overflow-y: hidden;
+                overflow-x: hidden;
+            }
+            .keypressFinder {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 50px;
+                height: 50px;
+            }
+            img {
+                width: 80%;
+            }
+            input[type=search] {
+                display: inline;
+                font-family: titleFont;
+                height: 30px;
+                width: 250px;
+                padding: 10px;
+                border-radius: 20px;
+                border: 1px solid #23272A;
+                font-size: 20px;
+                transition: all 0.5s;
+                line-height: 35px;
+            }
+            .accept {
+                font-weight: bold;
+                display: inline;
+                font-family: titleFont;
+                font-size: 20px;
+                line-height: 35px;
+            }
+            video {
+                width: 350px;
+                height: 130px;
+            }
+            input[type=search]:focus {outline:0;box-shadow: 0px 0px 3px grey;}
+        </style>
+        <script>
+            document.getElementById("frame").src = window.sessionStorage.freetubediscrete;
+            var hidden = true;
+            document.addEventListener('keydown',function(e){
+                if (e.keyCode==17)
+                {
+                    changeHidden();
+                }
+            });
+            if (!window.sessionStorage.freetubeverified) {
+                window.location="/";
+            }
+            function changeHidden() {
+                hidden = !hidden;
+                if (hidden) {
+                    document.getElementById("main").className = "searchHidden";
+                } else {
+                    document.getElementById("main").className = "search";
+                }
+            }
+        </script>
+    </head>
+    <body style="margin: 0" alink=white vlink=white link=white onload='document.getElementById("frame").src = window.sessionStorage.freetubediscrete;window.document.title = window.sessionStorage.freetubetitle'>
+        <iframe id="frame" src="" frameborder="0"></iframe>
+        <div class="searchHidden" id="main">
+            <b>{videoTitle}</b>  |  {videoAuthor}  |  {videoViews}<br><br><video controls><source src="{videoSource}"></video>

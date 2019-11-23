@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <title>Verification</title>
+        <style>
+            @font-face {
+                font-family: titleFont;
+                src:url("/font_bold.ttf");
+            }
+
+            @font-face {
+                font-family: normalFont;
+                src:url("/font_normal.ttf");
+            }
+            @keyframes howItWorks {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes hideSearch {
+                0% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            body {
+                font-family: normalFont;
+                background-color: #2C2F33;
+                color: #ffffff;
+            }
+            .search {
+                position: absolute;
+                top: 20%;
+                text-align: center;
+                width: 100%;
+                animation-name: howItWorks;
+                animation-duration: 1s;
+            }
+            .searchHidden {
+                position: absolute;
+                top: 20%;
+                text-align: center;
+                width: 100%;
+                animation-name: hideSearch;
+                animation-duration: 1s;
+            }
+            input {
+                font-family: titleFont;
+                width: 600px;
+                height: 25px;
+                padding: 20px;
+                border-radius: 20px;
+                border: 1px solid #23272A;
+                font-size: 20px;
+                transition: all 0.5s;
+            }
+            input:focus {outline:0;box-shadow: 0px 0px 3px grey;}
+            button:focus {outline:0}
+            button {
+                font-family: normalFont;
+                width: 200px;
+                padding: 10px;
+                margin-left: 15px;
+                margin-right: 15px;
+                border-radius: 10px;
+                border: 1px solid #23272A;
+                background-color: #7289DA;
+                color: #ffffff;
+            }
+            button:hover {
+                background-color: #AAB8E8;
+                color: #ffffff;
+                box-shadow: 0px 0px 3px #99AAB5;
+                cursor: pointer;
+            }
+            .buttons {
+                display: inline-block;
+                width: 600px;
+            }
+            .explaination {
+                display: inline-block;
+                width: 600px;
+                animation-name: howItWorks;
+                animation-duration: 2s;
+            }
+            .footer {
+              position: absolute;
+              top: 0px;
+              width: 100%;
+              padding: 10px;
+              box-sizing: border-box;
+            }
+        </style>
+        <script src="/konami.js"></script>
+        <script>
+            function konamiComplete() {
+                window.sessionStorage.freetubeverified = true;
+                window.location = "/app/main";
+            }
+            function help() {
+                document.getElementById("howitworks").innerHTML = "<div class=\"explaination\"><h2>What to do if you don't have an ID</h2>Sorry, but at the moment only verified users can access the system. This system is still very much in development, so there are many bugs. Only specified users may use the system as of now, but if you think you should be verified, please talk to the developer.</div>";
+            }
+            function verify() {
+                enteredCode = document.getElementById("query").value;
+                d = new Date();
+                actualCode = (d.getMinutes()+d.getDate()+d.getHours())*2;
+                actualCodeString = actualCode.toString();
+                if (enteredCode.includes(actualCodeString)) {
+                    window.sessionStorage.freetubeverified = true;
+                    window.location = "/";
+                } else {
+                    alert("Sorry, but that code is invalid. Please ask a verified user to give you another code. Please note: the code changes every minute.");
+                }
+            }
+        </script>
+        <link rel="icon" href="/icon.ico">
+    </head>
+    <body style="margin: 0" alink=white vlink=white link=white>
+        <div class="search" id="main">
+            <input type="search" placeholder="Type your ID code here" id="query" autocomplete="off"><br><br><div class="buttons">
+            <button onclick="verify()">Verify</button><button onclick="help()">I don't have an ID code!</button></div><br><br><br><div id="howitworks"></div><br><br><br><br>
+        </div>
+        <div class="footer">
+            <div style="float:right">Developed by <a href="http://youtube.com/cooltomato">CoolTomato</a></div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,192 @@
+<html>
+    <head>
+        <title>FreeTube</title>
+        <style>
+            @font-face {
+                font-family: titleFont;
+                src:url("/font_bold.ttf");
+            }
+
+            @font-face {
+                font-family: normalFont;
+                src:url("/font_normal.ttf");
+            }
+
+            @keyframes howItWorks {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes hideSearch {
+                0% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            body {
+                font-family: normalFont;
+                background-color: #2C2F33;
+                color: #ffffff;
+            }
+
+            
+            .search {
+                position: absolute;
+                top: 10%;
+                text-align: center;
+                width: 100%;
+                animation-name: howItWorks;
+                animation-duration: 1s;
+            }
+            .searchHidden {
+                position: absolute;
+                top: 10%;
+                text-align: center;
+                width: 100%;
+                animation-name: hideSearch;
+                animation-duration: 1s;
+            }
+            input[type=search] {
+                font-family: titleFont;
+                width: 600px;
+                height: 25px;
+                padding: 20px;
+                border-radius: 20px;
+                border: 1px solid #23272A;
+                font-size: 20px;
+                transition: all 0.5s;
+            }
+            input[type=search]:focus {outline:0;box-shadow: 0px 0px 3px grey;}
+            button:focus {outline:0}
+            button {
+                font-family: normalFont;
+                width: 200px;
+                padding: 10px;
+                margin-left: 15px;
+                margin-right: 15px;
+                border-radius: 10px;
+                border: 1px solid #23272A;
+                background-color: #7289DA;
+                color: #ffffff;
+            }
+            button:hover {
+                background-color: #AAB8E8;
+                color: #ffffff;
+                box-shadow: 0px 0px 3px #99AAB5;
+                cursor: pointer;
+            }
+            .buttons {
+                display: inline-block;
+                width: 600px;
+            }
+            .explaination {
+                display: inline-block;
+                width: 600px;
+                animation-name: howItWorks;
+                animation-duration: 2s;
+            }
+            .explainationHidden {
+                display: inline-block;
+                width: 600px;
+                animation-name: hideSearch;
+                animation-duration: 2s;
+                animation-fill-mode: forwards;
+            }
+            .startsHidden {
+                display: inline-block;
+                width: 600px;
+                opacity: 0;
+            }
+            .footer {
+              position: absolute;
+              top: 0px;
+              width: 100%;
+              padding: 10px;
+              box-sizing: border-box;
+            }
+        </style>
+        <link rel="icon" href="/icon.ico">
+        <script>
+            var helping = false;
+            var platform = "youtube";
+            var extraInfo = "";
+            if (!window.sessionStorage.freetubeverified) {
+                window.location="/";
+            }
+            function changePlatform() {
+                platform = document.querySelector('input[name="platform"]:checked').value;
+                if (platform == "twitch") {
+                    document.getElementById("query").placeholder = "Channel Name";
+                    document.getElementById("searchbutton").innerHTML = "Watch Live";
+                    document.getElementById("warning").innerHTML = "<font color='#ffaaaa'>Warning:</font> Twitch cannot be re-routed, so may be blocked";
+                    document.getElementById("searchType").src = "/icon/twitch";
+                } else if (platform == "insta") {
+                    document.getElementById("query").placeholder = "Account Name";
+                    document.getElementById("searchbutton").innerHTML = "View Photos";
+                    document.getElementById("warning").innerHTML = "";
+                    document.getElementById("searchType").src = "/icon/insta";
+                } else if (platform == "youtube") {
+                    document.getElementById("query").placeholder = "Search / Paste Link";
+                    document.getElementById("searchbutton").innerHTML = "Search / Watch";
+                    document.getElementById("warning").innerHTML = "";
+                    document.getElementById("searchType").src = "/icon/yt";
+                }
+            }
+            function help() {
+                helping = !helping;
+                if (helping) {
+                    document.getElementById("explaination").className = "explaination";
+                } else {
+                    document.getElementById("explaination").className = "explainationHidden";
+                }
+            }
+            function search() {
+                if (platform == "youtube") {
+                    window.location = "/app/search/"+document.getElementById("query").value+"/1";
+                    document.getElementById("main").className = "searchHidden";
+                    setTimeout(finishSearch,900);
+                } else if (platform == "twitch") {
+                    window.location = "/app/twitch/"+document.getElementById("query").value;
+                } else if (platform == "insta") {
+                    window.location = "/app/instagram/"+document.getElementById("query").value;
+                }
+            }
+            function finishSearch() {
+                document.getElementById("main").innerHTML = "<div style='width:600px;display:inline-block;'>Searching using my filter avoidance technique can take up to 20 seconds. Please be patient as we transfer data from YouTube to the FreeTube server.<br><br>Transferring search results for: '"+document.getElementById("query").value+"'<br><br><img src='https://icon-library.net/images/loading-icon-transparent-background/loading-icon-transparent-background-3.jpg' height=70 width=80></div>";
+                document.getElementById("main").className = "search";
+            }
+        </script>
+    </head>
+    <body style="margin: 0" alink=white vlink=white link=white>
+        <div class="search" id="main">
+            <a href="/app/main"><img src="/freetube.png" width=400></a>
+            <br><br><br>
+            <input type="search" placeholder="Search / Paste Link" id="query" autocomplete="off"><img id="searchType" src="/icon/yt" style="transform: translate(-45px, 6px);width: 25px;">
+            <br><br>
+            <div class="buttons">
+                <button onclick="search()" id="searchbutton">Search / Watch</button><button onclick="help()">More Options</button>
+            </div><br><br><br>
+            <div id="howitworks">
+                <div id="explaination" class="startsHidden">
+                    <h2>Welcome to FreeTube</h2>
+                    Welcome to FreeTube, a limitless, uncensored, unfiltered platform for social media. Ideal for boring school lessons in computer suites or if you want to watch <a href='/watch/8HehfOtRbUk'>PewDiePie in China</a>, FreeTube is the answer to all your firewalled social media requirements. Using state-of-the-art technology which cannot be blocked on most networks, FreeTube efficiently re-routes YouTube, Twitch or Instagram traffic to your device without compromising on quality or security. Its professional, intuitive interface, inspired by Discord, makes it at last easy to watch what <i>you</i> want.
+                    <h2>More Options</h2>
+                    <b>Platform Selection: </b><input type='radio' value='youtube' name='platform' onclick='changePlatform()' checked> YouTube <input type='radio' value='twitch' name='platform' onclick='changePlatform()'> Twitch <input type='radio' value='insta' name='platform' onclick='changePlatform()'> Instagram
+                    <br><span id='warning'></span><br>
+                    <b>Discrete Mode: </b><span style="color:#ff8888">OFF</span> <a href="/discrete/main">(turn on)</a>
+                </div>
+            </div>
+        </div>
+        <br><br><br><br>
+        <div class="footer">
+            <div style="float:right">Developed by <a href="http://youtube.com/cooltomato">CoolTomato</a></div>
+        </div>
+    </body>
+</html>
