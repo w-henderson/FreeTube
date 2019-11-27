@@ -16,7 +16,6 @@ FreeTube's verification system is in place solely so non-developers cannot use i
 ## Known Issues
 - **Twitch is blocked on some networks.**
   Unfortunately there is no work-around or fix for this issue. Twitch encrypts livestreams so they can only be seen on the Twitch.tv website, so the best I can do is embed a player.
-- **Twitch and Instagram throw errors in Discrete Mode.**
-  Twitch and Instagram are not yet implemented in Discrete Mode. Instagram may be added soon, but Twitch probably won't, as Discrete Mode is targeted at heavily monitored networks, and Twitch cannot be hidden.
+- **~~Twitch and Instagram throw errors in Discrete Mode.~~ FIXED IN LATEST UPDATE**
 - **Error 500 when multiple users are streaming YouTube at once.**
   This error occurs due to YouTube temporarily throttling or blocking FreeTube from accessing its videos. This cannot be fixed easily, but I am trying to implement a work-around.
