@@ -69,7 +69,7 @@ def searchPage(query,pageNumber):
         for result in results:
             shortenedDesc = (result[4][:264] + '...') if len(result[4]) > 267 else result[4]
             #returnValue += '<div class="result"><a href="/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info">'+result[2]+' | '+result[3]+' views</div>'+shortenedDesc+'</div><br>'
-            returnValue += '<div class="result"><a href="/app/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info"><i>{Information withheld for stealth, click the title to reveal}</i></div></div><br>'
+            returnValue += '<div class="result"><a href="/app/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info"><i><span onclick="window.location=\'/app/audio/'+result[1]+'\'">Click here for an audio-only stream which, depending on your browser, may save data.</span></i></div></div><br>'
         returnValue += "<br><br><br><br></div></div></body></html>"
         return returnValue
 
@@ -95,6 +95,12 @@ def watch(video):
     v = pafy.new(video)
     page = open("pages/app/videoPage.html").read()
     return page.replace("{videoTitle}",v.title).replace("{videoViews}",str(v.viewcount)).replace("{videoAuthor}",v.author).replace("{videoDescription}",v.description.replace("\n","<br>")).replace("{videoSource}","/content/"+video)
+
+@app.route('/app/audio/<video>')
+def audioOnly(video):
+    v = pafy.new(video)
+    page = open("pages/app/videoPage.html").read()
+    return page.replace("{videoTitle}",v.title).replace("{videoViews}",str(v.viewcount)).replace("{videoAuthor}",v.author).replace("{videoDescription}",v.description.replace("\n","<br>")).replace("{videoSource}","/content/"+video).replace("<video ","<audio ").replace("</video>","</audio>")
 
 @app.route('/discrete/watch/<video>')
 def discreteWatch(video):
