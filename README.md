@@ -1,3 +1,5 @@
+![FreeTube Banner](images/banner.png)
+
 # FreeTube
 **FreeTube is currently hosted on my [Repl.it](https://freetube.cooltomato.repl.co/) account, and some of its features are only available when hosted on Repl.it.**
 ## What is FreeTube?
