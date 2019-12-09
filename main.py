@@ -46,11 +46,11 @@ def verification():
 
 @app.route('/font_bold.ttf')
 def boldFont():
-    return open("fonts/font_bold.ttf","rb").read()
+    return send_file("fonts/font_bold.ttf")
 
 @app.route('/font_normal.ttf')
 def normalFont():
-    return open("fonts/font_normal.ttf","rb").read()
+    return send_file("fonts/font_bold.ttf")
 
 @app.route('/icon.ico')
 def icon():

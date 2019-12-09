@@ -109,17 +109,18 @@
             input[type=search]:focus {outline:0;box-shadow: 0px 0px 3px grey;}
         </style>
         <script>
-            document.getElementById("frame").src = window.sessionStorage.freetubediscrete;
-            var hidden = true;
-            document.addEventListener('keydown',function(e){
-                if (e.keyCode==17)
-                {
-                    changeHidden();
-                }
-            });
-            if (!window.sessionStorage.freetubeverified) {
-                window.location="/";
-            }
+			var hidden = true;
+			function onceReady() {
+				document.addEventListener('keydown',function(e){
+					if (e.keyCode==17)
+					{
+						changeHidden();
+					}
+				});
+				if (!window.sessionStorage.freetubeverified) {
+					window.location="/";
+				}
+			}
             function changeHidden() {
                 hidden = !hidden;
                 if (hidden) {
@@ -130,7 +131,7 @@
             }
         </script>
     </head>
-    <body style="margin: 0" alink=white vlink=white link=white onload='document.getElementById("frame").src = window.sessionStorage.freetubediscrete;window.document.title = window.sessionStorage.freetubetitle'>
+    <body style="margin: 0" alink=white vlink=white link=white onload='document.getElementById("frame").src = window.sessionStorage.freetubediscrete;window.document.title = window.sessionStorage.freetubetitle;onceReady();'>
         <iframe id="frame" src="" frameborder="0"></iframe>
         <div class="searchHidden" id="main">
             <b>{videoTitle}</b>  |  {videoAuthor}  |  {videoViews}<br><br><video controls><source src="{videoSource}"></video>
