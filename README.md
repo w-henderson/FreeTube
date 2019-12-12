@@ -18,7 +18,7 @@ FreeTube's verification system is in place solely so non-developers cannot use i
 ## Known Issues
 - UNFIXABLE: **Twitch is blocked on some networks.**
   Unfortunately there is no work-around or fix for this issue. Twitch encrypts livestreams so they can only be seen on the Twitch.tv website, so the best I can do is embed a player.
-- #3 **Error 500 when multiple users are streaming YouTube at once.**
+- [#3](https://github.com/w-henderson/FreeTube/issues/3) **Error 500 when multiple users are streaming YouTube at once.**
   This error occurs due to YouTube temporarily throttling or blocking FreeTube from accessing its videos. This cannot be fixed without multiple layers of proxies. If anyone wants to try and fix this themselves, please open a pull request!
-- #2 **Audio-only mode does not use less data than video mode**
+- [#2](https://github.com/w-henderson/FreeTube/issues/2) **Audio-only mode does not use less data than video mode**
   This is because it just puts the video file into the HTML5 `<audio>` tag. At the moment, the only solutions I've found require FFMPEG which isn't compatible with Repl.it.
