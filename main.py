@@ -50,7 +50,7 @@ def boldFont():
 
 @app.route('/font_normal.ttf')
 def normalFont():
-    return send_file("fonts/font_bold.ttf")
+    return send_file("fonts/font_normal.ttf")
 
 @app.route('/icon.ico')
 def icon():
@@ -89,6 +89,23 @@ def discreteSearchPage(query,pageNumber):
             returnValue += '<a href="/discrete/watch/'+result[1]+'">'+result[0]+'</a><br>'
         returnValue += "</div><div class=\"keypressFinder\"></div></body></html>"
         return returnValue
+
+@app.route('/app/twitter/<profile>')
+def twitter(profile):
+	tweetData = requests.get("https://twitter.com/"+profile)
+	tweetsText = ""
+	html = BeautifulSoup(tweetData.text, 'html.parser')
+	timeline = html.select('#timeline li.stream-item')
+	for tweet in timeline:
+		tweet_id = tweet['data-item-id']
+		tweet_text = tweet.select('p.tweet-text')[0].get_text(separator='').replace("https://"," https://").replace("http://"," http://").replace("pic.twitter.com"," pic.twitter.com").replace("\n","<br>").strip()
+		if tweet.select('span.js-retweet-text'):
+			tweetsText += "<div class='tweet'><img src='/icon/retweet'><b>Retweet from "+tweet.select('strong.fullname')[0].get_text()+"</b>:<br>"+tweet_text+"</div><hr>"
+		else:
+			tweetsText += "<div class='tweet'><img src='/icon/twitter'>"+tweet_text+"</div><hr>"
+	
+	page = open("pages/app/twitterPage.html").read()
+	return page.replace("{profileName}",profile).replace("{tweets}",tweetsText)
 
 @app.route('/app/watch/<video>')
 def watch(video):

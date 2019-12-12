@@ -137,7 +137,12 @@
                     document.getElementById("searchbutton").innerHTML = "Search / Watch";
                     document.getElementById("warning").innerHTML = "";
                     document.getElementById("searchType").src = "/icon/yt";
-                }
+                } else if (platform == "twitter") {
+					document.getElementById("query").placeholder = "Twitter Username";
+                    document.getElementById("searchbutton").innerHTML = "View Tweets";
+                    document.getElementById("warning").innerHTML = "";
+                    document.getElementById("searchType").src = "/icon/twitter";
+				}
             }
             function help() {
                 helping = !helping;
@@ -156,7 +161,9 @@
                     window.location = "/app/twitch/"+document.getElementById("query").value;
                 } else if (platform == "insta") {
                     window.location = "/app/instagram/"+document.getElementById("query").value;
-                }
+                } else if (platform == "twitter") {
+					window.location = "/app/twitter/"+document.getElementById("query").value;
+				}
             }
             function finishSearch() {
                 document.getElementById("main").innerHTML = "<div style='width:600px;display:inline-block;'>Searching using my filter avoidance technique can take up to 20 seconds. Please be patient as we transfer data from YouTube to the FreeTube server.<br><br>Transferring search results for: '"+document.getElementById("query").value+"'<br><br><img src='https://icon-library.net/images/loading-icon-transparent-background/loading-icon-transparent-background-3.jpg' height=70 width=80></div>";
@@ -176,9 +183,9 @@
             <div id="howitworks">
                 <div id="explaination" class="startsHidden">
                     <h2>Welcome to FreeTube</h2>
-                    Welcome to FreeTube, a limitless, uncensored, unfiltered platform for social media. Ideal for boring school lessons in computer suites or if you want to watch <a href='/watch/8HehfOtRbUk'>PewDiePie in China</a>, FreeTube is the answer to all your firewalled social media requirements. Using state-of-the-art technology which cannot be blocked on most networks, FreeTube efficiently re-routes YouTube, Twitch or Instagram traffic to your device without compromising on quality or security. Its professional, intuitive interface, inspired by Discord, makes it at last easy to watch what <i>you</i> want.
+                    Welcome to FreeTube, a limitless, uncensored, unfiltered platform for social media. Ideal for boring school lessons in computer suites or if you want to watch <a href='/watch/8HehfOtRbUk'>PewDiePie in China</a>, FreeTube is the answer to all your firewalled social media requirements. Using state-of-the-art technology which cannot be blocked on most networks, FreeTube efficiently re-routes traffic from numerous social networks to your device without compromising on quality or security. Its professional, intuitive interface, inspired by Discord, makes it at last easy to enjoy content which <i>you</i> want.
                     <h2>More Options</h2>
-                    <b>Platform Selection: </b><input type='radio' value='youtube' name='platform' onclick='changePlatform()' checked> YouTube <input type='radio' value='twitch' name='platform' onclick='changePlatform()'> Twitch <input type='radio' value='insta' name='platform' onclick='changePlatform()'> Instagram
+                    <b>Platform Selection: </b><input type='radio' value='youtube' name='platform' onclick='changePlatform()' checked> YouTube <input type='radio' value='twitch' name='platform' onclick='changePlatform()'> Twitch <input type='radio' value='insta' name='platform' onclick='changePlatform()'> Instagram <input type='radio' value='twitter' name='platform' onclick='changePlatform()'> Twitter
                     <br><span id='warning'></span><br>
                     <b>Discrete Mode: </b><span style="color:#ff8888">OFF</span> <a href="/discrete/main">(turn on)</a>
                 </div>
