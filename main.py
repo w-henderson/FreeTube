@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from flask import Flask, send_file
 import re
+from youtube_dl import YoutubeDL
 
 def search(searchQuery,pageNumber):
     doc = requests.get("http://youtube.com/search?q="+searchQuery).content
@@ -109,9 +110,12 @@ def twitter(profile):
 
 @app.route('/app/watch/<video>')
 def watch(video):
-    v = pafy.new(video)
+    #v = pafy.new(video)
     page = open("pages/app/videoPage.html").read()
-    return page.replace("{videoTitle}",v.title).replace("{videoViews}",str(v.viewcount)).replace("{videoAuthor}",v.author).replace("{videoDescription}",v.description.replace("\n","<br>")).replace("{videoSource}","/content/"+video)
+    #return page.replace("{videoTitle}",v.title).replace("{videoViews}",str(v.viewcount)).replace("{videoAuthor}",v.author).replace("{videoDescription}",v.description.replace("\n","<br>")).replace("{videoSource}","/content/"+video)
+    with YoutubeDL() as ydl:
+      info = ydl.extract_info(video,download=False)
+      return page.replace("{videoTitle}",info["title"]).replace("{videoViews}",str(info["view_count"])).replace("{videoAuthor}",info["uploader"]).replace("{videoDescription}",info["description"].replace("\n","<br>")).replace("{videoSource}","/content/"+video)
 
 @app.route('/app/audio/<video>')
 def audioOnly(video):
