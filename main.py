@@ -18,15 +18,14 @@ def search(searchQuery,pageNumber):
         if u[0:9] == "/watch?v=" and "&list" not in u:
             validLinks.append(u)
 
+    print(validLinks)
     validLinks = list(dict.fromkeys(validLinks)) # Removed duplicates
     print(validLinks)
 
     fullSearchResults = []
     for i in range(5):
-        #v = pafy.new("https://youtube.com"+validLinks[i+(5*(pageNumber-1))])
-        v = requests.get("https://youtube.com"+validLinks[i+(5*(pageNumber-1))]).text
-        textTitle = re.search('<title>(.*?)</title>',v).group(1).replace(" - YouTube","")
-        fullSearchResults.append([textTitle,validLinks[i+(5*(pageNumber-1))].replace("/watch?v=",""),"{channel withheld for stealth}","{views withheld for stealth}","{description withheld for stealth}"])
+        v = requests.get("https://www.youtube.com/oembed?url=https://youtube.com"+validLinks[i+(5*(pageNumber-1))],timeout=5).json()
+        fullSearchResults.append([v["title"],validLinks[i+(5*(pageNumber-1))].replace("/watch?v=",""),v["author_name"],"{views withheld for stealth}","{description withheld for stealth}"])
         print("PARSED https://youtube.com"+validLinks[i+(5*(pageNumber-1))])
     return fullSearchResults
 
@@ -70,7 +69,7 @@ def searchPage(query,pageNumber):
         for result in results:
             shortenedDesc = (result[4][:264] + '...') if len(result[4]) > 267 else result[4]
             #returnValue += '<div class="result"><a href="/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info">'+result[2]+' | '+result[3]+' views</div>'+shortenedDesc+'</div><br>'
-            returnValue += '<div class="result"><a href="/app/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info"><i><span onclick="window.location=\'/app/audio/'+result[1]+'\'">Click here for an audio-only stream which, depending on your browser, may save data.</span></i></div></div><br>'
+            returnValue += '<div class="result"><a href="/app/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info">'+result[2]+'</div></div><br>'
         returnValue += "<br><br><br><br></div></div></body></html>"
         return returnValue
 
