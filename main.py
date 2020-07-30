@@ -7,26 +7,20 @@ from bs4 import BeautifulSoup
 from flask import Flask, send_file
 import re
 from youtube_dl import YoutubeDL
+import uyts # (https://github.com/w-henderson/Unlimited-YouTube-Search/)
 
 def search(searchQuery,pageNumber):
-    doc = requests.get("http://youtube.com/search?q="+searchQuery).content
-    searchResults = BeautifulSoup(doc,'html.parser')
-
-    validLinks = []
-    for link in searchResults.find_all('a'):
-        u = link.get('href')
-        if u[0:9] == "/watch?v=" and "&list" not in u:
-            validLinks.append(u)
-
-    print(validLinks)
-    validLinks = list(dict.fromkeys(validLinks)) # Removed duplicates
-    print(validLinks)
-
+    searchResults = uyts.Search(searchQuery).results
     fullSearchResults = []
-    for i in range(5):
-        v = requests.get("https://www.youtube.com/oembed?url=https://youtube.com"+validLinks[i+(5*(pageNumber-1))],timeout=5).json()
-        fullSearchResults.append([v["title"],validLinks[i+(5*(pageNumber-1))].replace("/watch?v=",""),v["author_name"],"{views withheld for stealth}","{description withheld for stealth}"])
-        print("PARSED https://youtube.com"+validLinks[i+(5*(pageNumber-1))])
+    for result in searchResults:
+        if result.resultType != "video":
+            continue
+        fullSearchResults.append([result.title,result.id,result.author,result.views,"{description not yet supported}"])
+
+    #for i in range(5 if len(validLinks) >= 5 else len(validLinks)):
+    #    v = requests.get("https://www.youtube.com/oembed?url=https://youtube.com"+validLinks[i+(5*(pageNumber-1))],timeout=5).json()
+    #    fullSearchResults.append([v["title"],validLinks[i+(5*(pageNumber-1))].replace("/watch?v=",""),v["author_name"],"{views withheld for stealth}","{description withheld for stealth}"])
+    #    print("PARSED https://youtube.com"+validLinks[i+(5*(pageNumber-1))])
     return fullSearchResults
 
 
@@ -69,7 +63,7 @@ def searchPage(query,pageNumber):
         for result in results:
             shortenedDesc = (result[4][:264] + '...') if len(result[4]) > 267 else result[4]
             #returnValue += '<div class="result"><a href="/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info">'+result[2]+' | '+result[3]+' views</div>'+shortenedDesc+'</div><br>'
-            returnValue += '<div class="result"><a href="/app/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info">'+result[2]+'</div></div><br>'
+            returnValue += '<div class="result"><a href="/app/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info">'+result[2]+' | '+result[3]+'</div></div><br>'
         returnValue += "<br><br><br><br></div></div></body></html>"
         return returnValue
 
