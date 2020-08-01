@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from flask import Flask, send_file
 import re
 from youtube_dl import YoutubeDL
-import uyts # (https://github.com/w-henderson/Unlimited-YouTube-Search/)
+import uyts #(https://github.com/w-henderson/Unlimited-YouTube-Search/)
 
 def search(searchQuery,pageNumber):
     searchResults = uyts.Search(searchQuery).results
@@ -26,17 +26,9 @@ def search(searchQuery,pageNumber):
 
 app = Flask('app')
 
-@app.route('/app/main')
+@app.route('/')
 def main():
     return open("pages/app/searchPage.html").read()
-
-@app.route('/discrete/main')
-def discreteMain():
-    return open("pages/discrete/searchPage.html").read()
-
-@app.route('/')
-def verification():
-    return open("pages/app/verify.html").read()
 
 @app.route('/font_bold.ttf')
 def boldFont():
@@ -67,40 +59,6 @@ def searchPage(query,pageNumber):
         returnValue += "<br><br><br><br></div></div></body></html>"
         return returnValue
 
-@app.route('/discrete/search/<query>/<pageNumber>')
-def discreteSearchPage(query,pageNumber):
-    if int(pageNumber) <= 0:
-        pageNumber = "1"
-    returnValue = open("pages/discrete/resultsPage.html").read().replace("{nextPageNumber}",str(int(pageNumber)+1)).replace("{prevPageNumber}",str(int(pageNumber)-1)).replace("{query}",query)
-    try:
-        v = pafy.new(query)
-        return '<html><body><script>window.location="/discrete/watch/'+v.videoid+'"</script>'
-    except:
-        results = search(query,int(pageNumber))
-        for result in results:
-            shortenedDesc = (result[4][:264] + '...') if len(result[4]) > 267 else result[4]
-            #returnValue += '<div class="result"><a href="/watch/'+result[1]+'">'+result[0]+'</a><br><div class="info">'+result[2]+' | '+result[3]+' views</div>'+shortenedDesc+'</div><br>'
-            returnValue += '<a href="/discrete/watch/'+result[1]+'">'+result[0]+'</a><br>'
-        returnValue += "</div><div class=\"keypressFinder\"></div></body></html>"
-        return returnValue
-
-@app.route('/app/twitter/<profile>')
-def twitter(profile):
-	tweetData = requests.get("https://twitter.com/"+profile)
-	tweetsText = ""
-	html = BeautifulSoup(tweetData.text, 'html.parser')
-	timeline = html.select('#timeline li.stream-item')
-	for tweet in timeline:
-		tweet_id = tweet['data-item-id']
-		tweet_text = tweet.select('p.tweet-text')[0].get_text(separator='').replace("https://"," https://").replace("http://"," http://").replace("pic.twitter.com"," pic.twitter.com").replace("\n","<br>").strip()
-		if tweet.select('span.js-retweet-text'):
-			tweetsText += "<div class='tweet'><img src='/icon/retweet'><b>Retweet from "+tweet.select('strong.fullname')[0].get_text()+"</b>:<br>"+tweet_text+"</div><hr>"
-		else:
-			tweetsText += "<div class='tweet'><img src='/icon/twitter'>"+tweet_text+"</div><hr>"
-	
-	page = open("pages/app/twitterPage.html").read()
-	return page.replace("{profileName}",profile).replace("{tweets}",tweetsText)
-
 @app.route('/app/watch/<video>')
 def watch(video):
     #v = pafy.new(video)
@@ -116,59 +74,12 @@ def audioOnly(video):
     page = open("pages/app/videoPage.html").read()
     return page.replace("{videoTitle}",v.title).replace("{videoViews}",str(v.viewcount)).replace("{videoAuthor}",v.author).replace("{videoDescription}",v.description.replace("\n","<br>")).replace("{videoSource}","/content/"+video).replace("<video ","<audio ").replace("</video>","</audio>")
 
-@app.route('/discrete/watch/<video>')
-def discreteWatch(video):
-    v = pafy.new(video)
-    page = open("pages/discrete/videoPage.html").read()
-    return page.replace("{videoTitle}",v.title).replace("{videoViews}",str(v.viewcount)).replace("{videoAuthor}",v.author).replace("{videoSource}","/content/"+video)+"</div><div class=\"keypressFinder\"></div></body></html>"
-
 @app.route('/content/<video>')
 def content(video):
     v = pafy.new(video)
     s = v.getbest(preftype="mp4")
     u = s.url
     return requests.get(u).content
-
-@app.route('/app/twitch/<channel>')
-def twitch(channel):
-    page = open("pages/app/twitchPage.html").read()
-    return page.replace("{channelName}",channel)
-
-@app.route('/app/instagram/<username>')
-def instagram(username):
-    false = False
-    true = True
-    null = 0
-    page = open("pages/app/instaPage.html").read()
-    userData = eval(requests.get("https://www.instagram.com/"+username+"/?__a=1").text)["graphql"]["user"]
-    posts = [post["node"]["shortcode"] for post in userData["edge_owner_to_timeline_media"]["edges"]]
-    imageString = ""
-    for i in range(len(posts)):
-        imageString += "<a href='/app/instagramPhoto/"+username+"/"+str(i)+"'><img class='photo' src='/instagramContent/"+posts[i]+"/0'></a>"
-    if userData["is_private"]:
-        imageString = "Private Account"
-    return page.replace("{username}",username).replace("{fullname}",userData["full_name"]).replace("{followers}",str(userData["edge_followed_by"]["count"])).replace("{bio}",userData["biography"]).replace("{posts}",imageString).encode("utf-16","ignore")
-
-@app.route('/instagramContent/<photoID>/<hd>')
-def instaContent(photoID,hd):
-    if hd == "1":
-        return requests.get("https://instagram.com/p/"+photoID+"/media?size=l").content
-    else:
-        return requests.get("https://instagram.com/p/"+photoID+"/media").content
-
-@app.route('/app/instagramPhoto/<username>/<photoNumber>')
-def instaPhoto(username,photoNumber):
-    false = False
-    true = True
-    null = 0
-    page = open("pages/app/instaPhotoPage.html").read()
-    userData = eval(requests.get("https://www.instagram.com/"+username+"/?__a=1").text)["graphql"]["user"]
-    posts = [post["node"] for post in userData["edge_owner_to_timeline_media"]["edges"]]
-    selectedPost = posts[int(photoNumber)]
-    location = ""
-    if selectedPost["location"] != 0:
-        location = " | "+selectedPost["location"]["name"]
-    return page.replace("{imageURL}","/instagramContent/"+selectedPost["shortcode"]+"/1").replace("{username}",username).replace("{description}",selectedPost["edge_media_to_caption"]["edges"][0]["node"]["text"].replace("\n","<br>")).replace("{likes}",str(selectedPost["edge_liked_by"]["count"])).replace("{location}",location).encode("utf-16","ignore")
 
 @app.route('/loading.gif')
 def loading():
@@ -188,7 +99,7 @@ def error404(e):
 
 @app.errorhandler(500)
 def error500(e):
-    return open("pages/app/errorPage.html","r").read().replace("{errorInfo}","The error code for this error was 500, meaning that something went wrong between a social network and us. This could be because of a mis-typed Instagram or Twitch username, or because YouTube returned no results for a search. If this problem continues, please contact the developer."), 500
+    return open("pages/app/errorPage.html","r").read().replace("{errorInfo}","The error code for this error was 500, meaning that something went wrong between a social network and us. This could be because of a mis-typed URL, or because YouTube returned no results for a search. If this problem continues, please contact the developer."), 500
 
 @app.route('/konami.js')
 def konami():
