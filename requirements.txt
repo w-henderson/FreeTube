@@ -1,6 +1,0 @@
-youtube_dl
-pafy
-requests
-flask
-bs4
-unlimited-youtube-search
